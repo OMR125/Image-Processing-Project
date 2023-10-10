@@ -1,9 +1,11 @@
-/*  FCAI-CU - Object Oriented PROGRAMMING - 2023 - ASSIGNMENT-1
+/*  FCAI-CU - Object Oriented Programming - 2023 - ASSIGNMENT-1
     Program Name: ImageProccessingSoftware.cpp
     Last modification date: 10/10/2023
     Author 1 and ID: Amr El-Sheriey - 20220450
+    Email: amrsherieycll@gmail.com
     Author 2 and ID: Omar Mahfouz - 20220229
-    Author 3 and ID: n/a
+    Email: omer12memo1212@gmail.com
+    Author 3 and ID: None
     TA: n/a
     Purpose: Demonstrate use of bmplip for handling
     bmp colored and grayscale images
@@ -15,7 +17,7 @@
 #include <unistd.h>
 
 using namespace std;
-typedef function<void()> VoidFunction; // a typdef to make our CommandList work
+typedef function<void()> VoidFunction; // a typdef to make the CommandList work
 unsigned char image[SIZE][SIZE];
 
 void load_Image() {
@@ -56,32 +58,30 @@ void Invert() {
 
 void Merge() {
     unsigned char image2[SIZE][SIZE];
-
     // defining another image file to Merge
     char image2FileName[100];
     cout << "Please enter name Of image file to with: \n";
     cin >> image2FileName;
     strcat (image2FileName, ".bmp");
-    readGSBMP(image2FileName, image);
-
+    readGSBMP(image2FileName, image2);
     for (int i = 0; i < SIZE; i++)
         for (int j = 0; j < SIZE; j++)
-            image[i][j] =
-                    (image[i][j] + image2[i][j]) / 2; // making the pixel (i,j) the average of the two pixels given
+            image[i][j] = (image[i][j] + image2[i][j]) / 2; // making the pixel (i,j) the average of the two pixels given
 }
 
 void Flip() {
     cout << "Flip (h)orizontally or (v)ertically ?\n";
     char choice;
     cin >> choice;
+    choice = tolower(choice);
     char arr[SIZE][SIZE];
     if (choice == 'v') {
         for (int i = 0; i < SIZE; i++)
             for (int j = 0; j < SIZE; j++)
-                arr[i][j] = image[SIZE - i][SIZE - j];
+                arr[i][j] = image[SIZE - i][SIZE - j];//rotate 180
         for (int i = 0; i < SIZE; i++)
             for (int j = 0; j < SIZE; j++)
-                image[i][j] = arr[i][SIZE - j];
+                image[i][j] = arr[i][SIZE - j];//similar to mirroring left side
     } else
         for (int i = 0; i < SIZE; i++)
             for (int j = 0; j < SIZE / 2; j++)
@@ -90,11 +90,11 @@ void Flip() {
 
 void Rotate() {
     cout << "Rotate (90), (180), (270) or (360) degrees?\n";
-    int angle;  
+    int angle;
     cin >> angle;
     int n_rotations = angle/90;
     unsigned char image2[SIZE][SIZE];
-    while (n_rotations--) { // rotating 90 degrees multiple times bases on user's desire since 90*2=180 and 90*3=270
+    while (n_rotations--) { // rotating 90 degrees clockwise multiple times bases on user's desire since 90*2=180 and 90*3=270
         int k = 0;
         for (int i = 0; i < SIZE; i++)
             for (int j = 0; j < SIZE; j++)
@@ -103,14 +103,16 @@ void Rotate() {
             for (int i = 0; i < SIZE; i++)
                 image[i][j] = image2[k][i];
             k++;
+            // to rotate a 2d grid you make first row the last column , second row the penultimate column etc..
         }
     }
 }
 
 void Darken_or_lighten() {
     char choice;
-    cout << "Do you want to (d)arken or (I)ighten?\n";
+    cout << "Do you want to (d)arken or (l)ighten?\n";
     cin >> choice;
+    choice = tolower(choice);
     for (int i = 0; i < SIZE; i++)
         for (int j = 0; j < SIZE; j++) {
             if (choice == 'd')
@@ -124,14 +126,14 @@ void Darken_or_lighten() {
 int cnt, flag = 1;
 unordered_map<char, VoidFunction> Command_List;
 
-// creating a map that hold all the commands to avoid making a lot of if conditions and declutter it 
+// creating a map that hold all the commands to avoid making a lot of if conditions and declutter it
 void command_loop() {
     char command; //getting the command from the user
     cout << "Please select a filter to apply or 0 to Exit: \n";
     cout << "1- Black & White Filter \n2- Invert Filter \n3- Merge Filter \n";
     cout << "4- Flip Image \n5- Darken and Lighten Image \n6- Rotate Image \n";
     cout << "s- Save the Image\n";
-    
+
     cin >> command;
     command = tolower(command);
     if (command == '0') {
@@ -153,7 +155,7 @@ void command_loop() {
 }
 
 void Defining_Map() {
-    // associating a void function with a number in a command list
+    // associating a void function with a character in a command list
     Command_List['1'] = Black_And_White; // done
     Command_List['2'] = Invert; // done
     Command_List['3'] = Merge; // done
