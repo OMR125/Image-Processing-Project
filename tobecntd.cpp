@@ -41,30 +41,6 @@ void save_Image() {
    writeGSBMP(imageFileName, image);
 }
 
-// void Get_Image(unsigned char img[SIZE][SIZE]) {
-//     string Name, path = "\\images\\";
-//     cout << "The Name of The Image: ";
-//     cin >> Name;
-//     path += Name;
-//     path += ".bmp";
-//     char cwd[PATH_MAX];
-//     readGSBMP(strcat(getcwd(cwd, sizeof(cwd)), path.c_str()), img);
-// }
-
-// void Save_Image() {
-//     string Name, path = "\\images\\";
-//     cout << "The Name of The Image: ";
-//     cin >> Name;
-//     path += Name;
-//     path += ".bmp";
-//     char cwd[PATH_MAX];
-//     writeGSBMP(strcat(getcwd(cwd, sizeof(cwd)), path.c_str()), image);
-// }
-
-// void Print_Image() {
-//     showGSBMP(image);
-// }
-
 void Black_And_White() {
     for (int i = 0; i < SIZE; i++)
         for (int j = 0; j < SIZE; j++)
@@ -193,17 +169,24 @@ void Blur() {
 }
 
 void Crop() {
-    int white_image[256][256];
-    for (int i = 0; i < SIZE; i++) {
-        for (int j = 0; j < SIZE; j++) {
-            white_image[i][j] = 255;
-        }
-    }
-
     cout << "Please enter X, Y, L, W: ";
     int x, y, l, w;
     cin >> x >> y >> l >> w;
-
+    
+    function<bool(int,int)>isValid=[](int x,int w)->bool{
+        return (x+w)>0 && (x+w)<=255;
+    };
+    // checking if the given input lies within the image range
+    if(!(isValid(x,l)&&isValid(y,w)){
+        cout << "Invalid form of input please enter numbers in the range [0,255]\n";
+        Crop();
+    }
+    int white_image[256][256];
+    for (int i = 0; i < SIZE; i++) {
+        for (int j = 0; j < SIZE; j++) {
+            white_image[i][j] = 255; // making a full blank image
+        }
+    }
     for (int i = x; i <= l; i++) {
         for (int j = y; j <= w; j++) {
             white_image[i][j] = image[i][j];
