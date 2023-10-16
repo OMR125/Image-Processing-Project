@@ -327,7 +327,6 @@ unordered_map<char, VoidFunction> Command_List;
 
 // creating a map that hold all the commands to avoid making a lot of if conditions
 void command_loop() {
-    load_Image();
     char command; //getting the command from the user
     cout << "Please select a filter to apply: \n";
     cout << "1- Black & White Filter \n2- Invert Filter \n3- Merge Filter \n";
@@ -379,6 +378,7 @@ void Defining_Map() {
 
 int main() {
     Defining_Map();
+    load_Image();
     cout << "Welcome To Our Image Processing Project\n";
     while (flag)
         command_loop();
