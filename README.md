@@ -6,4 +6,4 @@ black and white - invert - merge - flip - darken and lighten - rotate - detect i
 
 it works by taking the image name that has to be in the same file directory and then edits it depending on the user input and then procceds to save it    
 
-made by Amr El-sheriey and Omar Mahfouz  
+Made by Amr El-Sheriey and Omar Mahfouz  
