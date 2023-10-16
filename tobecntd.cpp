@@ -1,6 +1,6 @@
 /*  FCAI-CU - OOP PROGRAMMING - 2023 - ASSIGNMENT-1
     Program Name: ImageProccessingSoftware.cpp
-    Last modification date: 6/10/2023
+    Last modification date: 16/10/2023
     Author 1 and ID: Amr El-Sheriey - 20220450
     Author 2 and ID: Omar Mahfouz - 20220229
     TA: n/a
@@ -8,11 +8,12 @@
     bmp colored and grayscale images
     Program load a gray image and store in another file
     program also applies filters to images depending on the user's request */
+    
 #include <bits/stdc++.h>
 #include "bmplib.h"
 #include "bmplib.cpp"
 #include <unistd.h>
-// wdadwadsdawdad
+
 using namespace std;
 typedef function<void()> VoidFunction; // a typdef to make our CommandList work
 unsigned char image[SIZE][SIZE];
@@ -40,6 +41,30 @@ void save_Image() {
    strcat (imageFileName, ".bmp");
    writeGSBMP(imageFileName, image);
 }
+
+// void Get_Image(unsigned char img[SIZE][SIZE]) {
+//     string Name, path = "\\images\\";
+//     cout << "The Name of The Image: ";
+//     cin >> Name;
+//     path += Name;
+//     path += ".bmp";
+//     char cwd[PATH_MAX];
+//     readGSBMP(strcat(getcwd(cwd, sizeof(cwd)), path.c_str()), img);
+// }
+
+// void Save_Image() {
+//     string Name, path = "\\images\\";
+//     cout << "The Name of The Image: ";
+//     cin >> Name;
+//     path += Name;
+//     path += ".bmp";
+//     char cwd[PATH_MAX];
+//     writeGSBMP(strcat(getcwd(cwd, sizeof(cwd)), path.c_str()), image);
+// }
+
+// void Print_Image() {
+//     showGSBMP(image);
+// }
 
 void Black_And_White() {
     for (int i = 0; i < SIZE; i++)
@@ -169,24 +194,17 @@ void Blur() {
 }
 
 void Crop() {
-    cout << "Please enter X, Y, L, W: ";
-    int x, y, l, w;
-    cin >> x >> y >> l >> w;
-    
-    function<bool(int,int)>isValid=[](int x,int w)->bool{
-        return (x+w)>0 && (x+w)<=255;
-    };
-    // checking if the given input lies within the image range
-    if(!(isValid(x,l)&&isValid(y,w)){
-        cout << "Invalid form of input please enter numbers in the range [0,255]\n";
-        Crop();
-    }
     int white_image[256][256];
     for (int i = 0; i < SIZE; i++) {
         for (int j = 0; j < SIZE; j++) {
-            white_image[i][j] = 255; // making a full blank image
+            white_image[i][j] = 255;
         }
     }
+
+    cout << "Please enter X, Y, L, W: ";
+    int x, y, l, w;
+    cin >> x >> y >> l >> w;
+
     for (int i = x; i <= l; i++) {
         for (int j = y; j <= w; j++) {
             white_image[i][j] = image[i][j];
@@ -201,9 +219,94 @@ void Crop() {
 
 void Die() {}
 
-void Enlarge() {}
+void Enlarge() { 
+    // Determine the starting indices based on the quarter
+    char quarter; 
+    cout << "Which Quarter do you want to enlarge 1, 2, 3 or 4 ?\n";
+    cin >> quarter;
+    int startC, startR;
 
-void Shrink() {}
+    // how we decide which quarter should be enlarged and if its not 2, 3 or 4 then the default values will start in quarter 1
+    if (quarter == '1'){
+        startR = 0;
+        startC = 0;
+    }
+    else if (quarter == '2'){
+        startC = 128;
+        startR = 0;
+    }
+    else if (quarter == '3'){
+        startC = 0;
+        startR = 128;
+    }
+    else if (quarter == '4'){
+        startC == 128;
+        startR == 128;
+    }
+
+    // Loop through the original image quarter
+    for(int i = startR; i < (startR + 128); i++) {
+        for(int j = startC; j < (startC + 128); j++) {
+            // this is to skip over the enlarged pixels in the new image
+            int enlargedI = (i - startR) * 2;
+            int enlargedJ = (j - startC) * 2;
+            // Enlarge the pixel to the new image by setting each pixel from the quarter to 4 pixels in the new 256x256 image
+            image[enlargedI][enlargedJ] = image[i][j];
+            image[enlargedI + 1][enlargedJ] = image[i][j];
+            image[enlargedI][enlargedJ + 1] = image[i][j];
+            image[enlargedI + 1][enlargedJ + 1] = image[i][j];
+        }
+    }        
+}
+
+void Shrink() {
+    string lvl; // level of shrinking
+    cout << "Shrink to (1/2), (1/3) or (1/4)?\n";
+    cin >> lvl;
+
+    // creating a white image
+    unsigned char white_image[SIZE][SIZE];
+    for (int i = 0; i < SIZE; i++) {
+        for (int j = 0; j < SIZE; j++) {
+            white_image[i][j] = 255;
+        }
+    }
+
+    // conditions to decide the new size of the image depending on the user input
+    int new_size;
+    if(lvl == "1/2")
+        new_size = SIZE / 2;
+    else if(lvl == "1/3")
+        new_size = SIZE / 3;
+    else if(lvl == "1/4")
+        new_size = SIZE / 4;
+    else {
+        cout << "please enter a correct shrinking level\n";
+        Shrink();
+    }
+
+    // creating a integer called blockS to decide what the block size we are going to use
+    int blockS = SIZE / new_size;
+    for(int i = 0; i < new_size; i++) {
+        for(int j = 0; j < new_size; j++) {
+            // Calculate the average of the block from the original image
+            int sum = 0;
+            for(int x = 0; x < blockS; x++) {
+                for(int y = 0; y < blockS; y++) {
+                    sum += image[blockS * i + x][blockS * j + y];
+                }
+            }
+            white_image[i][j] = sum / (blockS * blockS);
+        }
+    }
+
+    // transferring whats in the white_image into the original image for easier saving because the save function holds the original image
+    for (int i = 0; i < SIZE; i++) {
+        for (int j = 0; j < SIZE; j++) {
+            image[i][j] = white_image[i][j];
+        }
+    }
+}
 
 void Shuffle() {}
 
@@ -216,13 +319,14 @@ unordered_map<char, VoidFunction> Command_List;
 
 // creating a map that hold all the commands to avoid making a lot of if conditions
 void command_loop() {
+    load_Image();
     char command; //getting the command from the user
-    cout << "Please select a filter to apply or 0 to Exit: \n";
+    cout << "Please select a filter to apply: \n";
     cout << "1- Black & White Filter \n2- Invert Filter \n3- Merge Filter \n";
     cout << "4- Flip Image \n5- Darken and Lighten Image \n6- Rotate Image \n";
     cout << "7- Detect Image Edges \n8- Enlarge Image \n9- Shrink Image \n";
     cout << "a- Mirror Image \nb- Shuffle Image \nc- Blur Image \nd- Crop Image \n";
-    cout << "e- Skew Image to the Right \nf- Skew Image UP \ns- Save the Image\n";
+    cout << "e- Skew Image to the Right \nf- Skew Image UP \ns- Save the Image\nr- Restart the Program\n0- Exit\n";
     // cout << "h- Print the Image to a File \n0- Exit\n";
     cin >> command;
     command = tolower(command);
@@ -253,7 +357,7 @@ void Defining_Map() {
     Command_List['5'] = Darken_or_lighten; // done
     Command_List['6'] = Rotate; // done
     Command_List['7'] = Die; // [N/A]
-    Command_List['8'] = Enlarge; // [N/A]
+    Command_List['8'] = Enlarge; // Almost Done but quarters 1,2 do not work
     Command_List['9'] = Shrink; // [N/A]
     Command_List['a'] = Mirror; // done
     Command_List['b'] = Shuffle; // [N/A]
@@ -262,13 +366,12 @@ void Defining_Map() {
     Command_List['e'] = Skew_Right; // [N/A]
     Command_List['f'] = Skew_Up; // [N/A]
     Command_List['s'] = save_Image; // done
-    // Command_List['h'] = Print_Image; // done
+    Command_List['r'] = command_loop;
 }
 
 int main() {
     Defining_Map();
     cout << "Welcome To Our Image Processing Project\n";
-    load_Image();
     while (flag)
         command_loop();
 }
