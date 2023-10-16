@@ -12,7 +12,7 @@
 #include "bmplib.h"
 #include "bmplib.cpp"
 #include <unistd.h>
-
+// wdadwadsdawdad
 using namespace std;
 typedef function<void()> VoidFunction; // a typdef to make our CommandList work
 unsigned char image[SIZE][SIZE];
