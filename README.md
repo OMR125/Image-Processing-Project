@@ -1,4 +1,4 @@
-# Image-Processing-Project
+# Image-Processing-Project \n
 this is an image proccesing project required by FCAI-CU as an assignemnt
 it contains the functions to load and save 256x256 bitmap images as well as 15 unique filters that edit on the image 
 it contains the following filters :
