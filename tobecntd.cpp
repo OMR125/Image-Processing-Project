@@ -226,6 +226,14 @@ void Enlarge() {
     cin >> quarter;
     int startC, startR;
 
+    // creating a white image
+    unsigned char white_image[SIZE][SIZE];
+    for (int i = 0; i < SIZE; i++) {
+        for (int j = 0; j < SIZE; j++) {
+            white_image[i][j] = 255;
+        }
+    }
+
     // how we decide which quarter should be enlarged and if its not 2, 3 or 4 then the default values will start in quarter 1
     if (quarter == '1'){
         startR = 0;
@@ -251,12 +259,17 @@ void Enlarge() {
             int enlargedI = (i - startR) * 2;
             int enlargedJ = (j - startC) * 2;
             // Enlarge the pixel to the new image by setting each pixel from the quarter to 4 pixels in the new 256x256 image
-            image[enlargedI][enlargedJ] = image[i][j];
-            image[enlargedI + 1][enlargedJ] = image[i][j];
-            image[enlargedI][enlargedJ + 1] = image[i][j];
-            image[enlargedI + 1][enlargedJ + 1] = image[i][j];
+            white_image[enlargedI][enlargedJ] = image[i][j];
+            white_image[enlargedI + 1][enlargedJ] = image[i][j];
+            white_image[enlargedI][enlargedJ + 1] = image[i][j];
+            white_image[enlargedI + 1][enlargedJ + 1] = image[i][j];
         }
     }        
+    for (int i = 0; i < SIZE; i++) {
+        for (int j = 0; j < SIZE; j++) {
+            image[i][j] = white_image[i][j];
+        }
+    }
 }
 
 void Shrink() {
@@ -319,7 +332,6 @@ unordered_map<char, VoidFunction> Command_List;
 
 // creating a map that hold all the commands to avoid making a lot of if conditions
 void command_loop() {
-    load_Image();
     char command; //getting the command from the user
     cout << "Please select a filter to apply: \n";
     cout << "1- Black & White Filter \n2- Invert Filter \n3- Merge Filter \n";
@@ -366,11 +378,12 @@ void Defining_Map() {
     Command_List['e'] = Skew_Right; // [N/A]
     Command_List['f'] = Skew_Up; // [N/A]
     Command_List['s'] = save_Image; // done
-    Command_List['r'] = command_loop;
+    // Command_List['r'] = command_loop;
 }
 
 int main() {
     Defining_Map();
+    load_Image();
     cout << "Welcome To Our Image Processing Project\n";
     while (flag)
         command_loop();
