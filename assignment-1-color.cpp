@@ -44,6 +44,26 @@ void save_Image() {
 }
 
 void Black_And_White() {
+    // creating a white image to hold what's to come 
+    unsigned char white_image[SIZE][SIZE][RGB];
+    for (int i = 0; i < SIZE; i++)
+        for (int j = 0; j < SIZE; j++)
+            for (int k = 0; k < RGB; k++)
+                white_image[i][j][k] = 255;
+
+    // turning the image into grayscale by taking the average of all colors
+    for (int i = 0; i < SIZE; i++)
+        for (int j = 0; j < SIZE; j++){
+            white_image[i][j][0] = (image[i][j][0] + image[i][j][1] + image[i][j][2]) / 3;
+            white_image[i][j][1] = (image[i][j][0] + image[i][j][1] + image[i][j][2]) / 3; 
+            white_image[i][j][2] = (image[i][j][0] + image[i][j][1] + image[i][j][2]) / 3;
+        }
+    
+    for (int i = 0; i < SIZE; i++)
+        for (int j = 0; j < SIZE; j++)
+            for (int k = 0; k < RGB; k++)
+                image[i][j][k] = white_image[i][j][k];
+    // now running the same code as the grayscale code to make it black and white  
     for (int i = 0; i < SIZE; i++)
         for (int j = 0; j < SIZE; j++)
             for (int k = 0; k < RGB; k++)
