@@ -399,11 +399,11 @@ void Defining_Map() {
     Command_List['4'] = Flip; // done
     Command_List['5'] = Darken_or_lighten; // done
     Command_List['6'] = Rotate; // done
-    Command_List['7'] = Detect_Edges; // [N/A]
+    Command_List['7'] = Detect_Edges; // done
     Command_List['8'] = Enlarge; // done
     Command_List['9'] = Shrink; // done
     Command_List['a'] = Mirror; // done
-    Command_List['b'] = Shuffle; // [N/A]
+    Command_List['b'] = Shuffle; // done
     Command_List['c'] = Blur; // done
     Command_List['d'] = Crop; // done
     Command_List['e'] = Skew_Right; // [N/A]
