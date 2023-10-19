@@ -1,7 +1,9 @@
 # Image-Processing-Project  
 This is an image-processing project required by FCAI-CU as an assignment
 
-It works by taking the image name that has to be in the same file directory and then edits it depending on the user's input and then saving it    
+It works by taking the image name that has to be in the same file directory and then edits it depending on the user's input and then saving it     
+
+Disclaimer: this project ONLY works on 256x256 GS or RGB Bitmap images it is not designed to work with other image extentions or any other size other than 256x256.
 
 The assignment-1.cpp file contains the functions to load and save 256x256 grayscale bitmap images as well as 15 unique filters that edit the image   
 it contains the following filters :  
