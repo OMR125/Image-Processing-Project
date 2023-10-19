@@ -18,8 +18,6 @@ using namespace std;
 
 unsigned char image[SIZE][SIZE];
 
-int main();
-
 void load_Image() {
     char imageFileName[100];
 
