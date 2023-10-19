@@ -36,9 +36,9 @@ Blur: Simmilar to shrinking we also try to make small blocks or windows of size 
 
 Crop: This filter just works by starting on the x,y positions that the user inputs and then travels l,w distance and saves them on a white background.  
 
-Skew Up: First of all we need to shrink the image and make the image's length X and the rest of it white. The length X is calculated by basic trigonometry using the degree given by the user, after shrinking the pixels will be shifted by 256-X and multiplied by a constant named Y. Y is the percentage that is needed to make the skewed image fit the picture from the range between the pixels (255,0) and (0,255).
+Skew Right: First of all we need to shrink the image and make the image's length X and the rest of it white. The length X is calculated by basic trigonometry using the degree given by the user, after shrinking the pixels will be shifted by 256-X and multiplied by a constant named Y. Y is the percentage that is needed to make the skewed image fit the picture from the range between the pixels (255,0) and (0,255).
 
-Skew Right: It's similar to Skewing up but we replace every operation done to columns with rows. 
+Skew Up: It's similar to Skewing Right but we replace every operation done to columns with rows. 
 
 The assignment-1-color.cpp file is the same program but works with 256X256 RGB bitmap images.
     
