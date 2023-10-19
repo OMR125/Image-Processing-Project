@@ -118,17 +118,18 @@ void Darken_or_lighten() {
     cout << "Do you want to (d)arken or (l)ighten?\n";
     cin >> choice;
     choice = tolower(choice);
+    if(!(choice == 'd'||choice == 'l')) {
+        cout << "Please enter a correct choice\n";
+        Darken_or_lighten();
+        return;
+    }
     for (int i = 0; i < SIZE; i++)
         for (int j = 0; j < SIZE; j++) {
             if (choice == 'd')
                 image[i][j] /= 2; // darkens the image by 50% by dividing by 2 which makes it less bright overall
-            else if (choice == 'l')
+            else
                 image[i][j] = min(255, image[i][j] + image[i][j] / 2);
                 // lightens the image  by 50% by adding more bits to the pixels but making sure the value is within bounds
-            else {
-                cout << "Please enter a correct choice\n";
-                Darken_or_lighten();
-            }
         }
 }
 
@@ -252,6 +253,10 @@ void Enlarge() {
     } else if (quarter == '4') {
         startC = 128;
         startR = 128;
+    } else {
+        cout << "INVALID QUARTER. TRY AGAIN.";
+        Enlarge();
+        return;
     }
 
     // Loop through the original image quarter
@@ -294,6 +299,7 @@ void Shrink() {
     else {
         cout << "please enter a correct shrinking level\n";
         Shrink();
+        return;
     }
 
     // creating an integer called blockS to decide what the block size we are going to use
@@ -333,6 +339,7 @@ void Shuffle() {
     if (!(one && two && three && four)) {
         cout << "INVALID ORDER, TRY AGAIN\n";
         Shuffle();
+        return;
     }
     int image2[SIZE][SIZE];
     for (int i = 0; i < SIZE; i++)
@@ -354,9 +361,48 @@ void Shuffle() {
     }
 }
 
-void Skew_Up() {}
+void Skew_Up() {
 
-void Skew_Right() {}
+
+}
+
+void Skew_Right() {
+    double rad;
+    cout << "Please enter degree to skew right: ";
+    cin >> rad;
+    if(rad>=90||rad<0){
+        cout << "Please enter a degree in the range [0,90[\n";
+        Skew_Right();
+        return;
+    }
+    rad = (rad*22)/(180*7);
+    int length = tan(rad)*256/(tan(rad)+1);
+    unsigned char white_image[SIZE][SIZE];
+    for (int i = 0; i < SIZE; i++)
+        for (int j = 0; j < SIZE; j++)
+            white_image[i][j] = 255; // making a white image
+
+    for (int i = 0; i < SIZE; i++)
+        for (int j = 0; j < SIZE; j++)
+            white_image[i][j * length / SIZE] = image[i][j]; // Shrink procedure
+
+    for (int i = 0; i < SIZE; i++)
+        for (int j = 0; j < SIZE; j++) {
+            image[i][j] = white_image[i][j];
+            white_image[i][j] = 255;
+        }
+    double move = (SIZE - length) / (1.0*SIZE); 
+    // every row there is a movement like a staircase when zooming in. this move variable helps doing it.
+    for(int i=0;i<SIZE;i++)
+        for(int j=0; j < length; j++)
+            white_image[i][(int)((SIZE-length) - i * move + j)] = image[i][j];
+    // shifting every pixel to the designated column at (SIZE-length) - i * move + j
+
+    for (int i = 0; i < SIZE; i++)
+        for (int j = 0; j < SIZE; j++)
+            image[i][j] = white_image[i][j];
+
+}
 
 int cnt, flag = 1;
 unordered_map<char, function<void()>> Command_List;
@@ -369,7 +415,7 @@ void command_loop() {
     cout << "4- Flip Image \n5- Darken and Lighten Image \n6- Rotate Image \n";
     cout << "7- Detect Image Edges \n8- Enlarge Image \n9- Shrink Image \n";
     cout << "a- Mirror Image \nb- Shuffle Image \nc- Blur Image \nd- Crop Image \n";
-    cout << "e- Skew Image to the Right \nf- Skew Image UP \ns- Save the Image\nr- Restart the Program\n0- Exit\n";
+    cout << "e- Skew Image Right \nf- Skew Image UP \ns- Save the Image\nr- Restart the Program\n0- Exit\n";
     // cout << "h- Print the Image to a File \n0- Exit\n";
     cin >> command;
     command = tolower(command);
