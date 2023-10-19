@@ -44,7 +44,7 @@ void save_Image() {
 }
 
 void Black_And_White() {
-    // creating a white image to hold what's to come 
+    // creating a white image to hold what's to come
     unsigned char white_image[SIZE][SIZE][RGB];
     for (int i = 0; i < SIZE; i++)
         for (int j = 0; j < SIZE; j++)
@@ -55,15 +55,15 @@ void Black_And_White() {
     for (int i = 0; i < SIZE; i++)
         for (int j = 0; j < SIZE; j++){
             white_image[i][j][0] = (image[i][j][0] + image[i][j][1] + image[i][j][2]) / 3;
-            white_image[i][j][1] = (image[i][j][0] + image[i][j][1] + image[i][j][2]) / 3; 
+            white_image[i][j][1] = (image[i][j][0] + image[i][j][1] + image[i][j][2]) / 3;
             white_image[i][j][2] = (image[i][j][0] + image[i][j][1] + image[i][j][2]) / 3;
         }
-    
+
     for (int i = 0; i < SIZE; i++)
         for (int j = 0; j < SIZE; j++)
             for (int k = 0; k < RGB; k++)
                 image[i][j][k] = white_image[i][j][k];
-    // now running the same code as the grayscale code to make it black and white  
+    // now running the same code as the grayscale code to make it black and white
     for (int i = 0; i < SIZE; i++)
         for (int j = 0; j < SIZE; j++)
             for (int k = 0; k < RGB; k++)
@@ -399,7 +399,48 @@ void Shuffle() {
 
 void Skew_Up() {}
 
-void Skew_Right() {}
+void Skew_Right() {
+    double rad;
+    cout << "Please enter degree to skew right: ";
+    cin >> rad;
+    if(rad>=90||rad<0){
+        cout << "Please enter a degree in the range [0,90[\n";
+        Skew_Right();
+        return;
+    }
+    rad = (rad*22)/(180*7);
+    int length = tan(rad)*256/(tan(rad)+1);
+    unsigned char white_image[SIZE][SIZE][RGB];
+    for (int i = 0; i < SIZE; i++)
+        for (int j = 0; j < SIZE; j++)
+            for(int k = 0; k < RGB; k++)
+            white_image[i][j][k] = 255; // making a white image
+
+    for (int i = 0; i < SIZE; i++)
+        for (int j = 0; j < SIZE; j++)
+            for(int k = 0; k < RGB; k++)
+            white_image[i][j * length / SIZE][k] = image[i][j][k]; // Shrink procedure
+
+    for (int i = 0; i < SIZE; i++)
+        for (int j = 0; j < SIZE; j++)
+            for(int k = 0; k < RGB; k++) {
+                image[i][j][k] = white_image[i][j][k];
+                white_image[i][j][k] = 255;
+            }
+
+    double move = (SIZE - length) / (1.0*SIZE);
+    // every row there is a movement like a staircase when zooming in. this move variable helps doing it.
+    for(int i=0;i<SIZE;i++)
+        for(int j=0; j < length; j++)
+            for(int k = 0;k < RGB;k++)
+                white_image[i][(int)((SIZE-length) - i * move + j)][k] = image[i][j][k];
+    // shifting every pixel to the designated column at (SIZE-length) - i * move + j
+
+    for (int i = 0; i < SIZE; i++)
+        for (int j = 0; j < SIZE; j++)
+            for(int k = 0; k < RGB; k++)
+                image[i][j][k] = white_image[i][j][k];
+}
 
 int cnt, flag = 1;
 unordered_map<char, function<void()>> Command_List;
