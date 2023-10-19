@@ -22,7 +22,7 @@ int main();
 void Load_Image() {
     char imageFileName[100];
 
-    // Get gray scale image file name
+    // Get RGB image file name
     cout << "Enter the source image file name: ";
     cin >> imageFileName;
 
@@ -34,7 +34,7 @@ void Load_Image() {
 void Save_Image() {
     char imageFileName[100];
 
-    // Get gray scale image target file name
+    // Get RGB image target file name
     cout << "What do you want to name the new image: ";
     cin >> imageFileName;
 
