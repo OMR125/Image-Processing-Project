@@ -129,7 +129,7 @@ void Darken_or_lighten() {
                 image[i][j] /= 2; // darkens the image by 50% by dividing by 2 which makes it less bright overall
             else
                 image[i][j] = min(255, image[i][j] + image[i][j] / 2);
-                // lightens the image  by 50% by adding more bits to the pixels but making sure the value is within bounds
+            // lightens the image  by 50% by adding more bits to the pixels but making sure the value is within bounds
         }
 }
 
@@ -324,8 +324,8 @@ void Shrink() {
 void Shuffle() {
     int order[4];
     bool one, two, three, four;
-    one = two = three = four = 0; 
-    // I want to check if 1 and 2 and 3 and 4 occur in the input 
+    one = two = three = four = 0;
+    // I want to check if 1 and 2 and 3 and 4 occur in the input
     // else it's an invalid form of input
     cout << "New order of quarters ?";
     for (int i = 0; i < 4; i++) {
@@ -334,7 +334,7 @@ void Shuffle() {
         two |= (order[i] == 2);
         three |= (order[i] == 3);
         four |= (order[i] == 4);
-        order[i]--; // because 0-indexed is better 
+        order[i]--; // because 0-indexed is better
     }
     if (!(one && two && three && four)) {
         cout << "INVALID ORDER, TRY AGAIN\n";
@@ -355,15 +355,47 @@ void Shuffle() {
         // stop i and stop j after SIZE/2 steps since you only get to move half of the image in each quarter
         for (; i < stop_i; i++, x++) {
             for (int j = start_pos[k].second, y = start_pos[order[k]].second; j < stop_j; j++, y++) {
-                image[i][j] = image2[x][y]; // make the kth quarter = the wanted quarter 
+                image[i][j] = image2[x][y]; // make the kth quarter = the wanted quarter
             }
         }
     }
 }
 
 void Skew_Up() {
+    double rad;
+    cout << "Please enter degree to skew right: ";
+    cin >> rad;
+    if(rad>=90||rad<0){
+        cout << "Please enter a degree in the range [0,90[\n";
+        Skew_Up();
+        return;
+    }
+    rad = (rad*22)/(180*7);
+    int length = tan(rad)*256/(tan(rad)+1);
+    unsigned char white_image[SIZE][SIZE];
+    for (int i = 0; i < SIZE; i++)
+        for (int j = 0; j < SIZE; j++)
+            white_image[i][j] = 255; // making a white image
 
+    for (int j = 0; j < SIZE; j++)
+        for (int i = 0; i < SIZE; i++)
+            white_image[i * length / SIZE][j] = image[i][j]; // Shrink procedure
 
+    for (int i = 0; i < SIZE; i++)
+        for (int j = 0; j < SIZE; j++) {
+            image[i][j] = white_image[i][j];
+            white_image[i][j] = 255;
+        }
+    double move = (SIZE - length) / (1.0*SIZE);
+    // every row there is a movement like a staircase when zooming in. this move variable helps doing it.
+    for(int j=0;j<SIZE;j++)
+        for(int i=0; i < length; i++)
+            white_image[(int)((SIZE-length) - j * move + i)][j] = image[i][j];
+    // shifting every pixel to the designated row at SIZE-length) - j * move + i)
+
+    for (int i = 0; i < SIZE; i++)
+        for (int j = 0; j < SIZE; j++)
+            image[i][j] = white_image[i][j];
 }
 
 void Skew_Right() {
@@ -391,7 +423,7 @@ void Skew_Right() {
             image[i][j] = white_image[i][j];
             white_image[i][j] = 255;
         }
-    double move = (SIZE - length) / (1.0*SIZE); 
+    double move = (SIZE - length) / (1.0*SIZE);
     // every row there is a movement like a staircase when zooming in. this move variable helps doing it.
     for(int i=0;i<SIZE;i++)
         for(int j=0; j < length; j++)
@@ -401,7 +433,6 @@ void Skew_Right() {
     for (int i = 0; i < SIZE; i++)
         for (int j = 0; j < SIZE; j++)
             image[i][j] = white_image[i][j];
-
 }
 
 int cnt, flag = 1;
@@ -452,8 +483,8 @@ void Defining_Map() {
     Command_List['b'] = Shuffle; // done
     Command_List['c'] = Blur; // done
     Command_List['d'] = Crop; // done
-    Command_List['e'] = Skew_Right; // [N/A]
-    Command_List['f'] = Skew_Up; // [N/A]
+    Command_List['e'] = Skew_Right; // done
+    Command_List['f'] = Skew_Up; // done
     Command_List['s'] = save_Image; // done
     Command_List['r'] = main;
 }
