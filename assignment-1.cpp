@@ -19,7 +19,7 @@ unsigned char image[SIZE][SIZE];
 
 int main();
 
-void load_Image() {
+void Load_Image() {
     char imageFileName[100];
 
     // Get gray scale image file name
@@ -31,11 +31,11 @@ void load_Image() {
     readGSBMP(imageFileName, image);
 }
 
-void save_Image() {
+void Save_Image() {
     char imageFileName[100];
 
     // Get gray scale image target file name
-    cout << "Enter the target image file name: ";
+    cout << "What do you want to name the new image: ";
     cin >> imageFileName;
 
     // Add to it .bmp extension and load image
@@ -59,7 +59,7 @@ void Merge() {
     unsigned char image2[SIZE][SIZE];
     // defining another image file to Merge
     char image2FileName[100];
-    cout << "Please enter name Of image file to merge with: \n";
+    cout << "Enter the name of the image file to merge with: ";
     cin >> image2FileName;
     strcat(image2FileName, ".bmp");
     readGSBMP(image2FileName, image2);
@@ -74,6 +74,11 @@ void Flip() {
     char choice;
     cin >> choice;
     choice = tolower(choice);
+    if(!(choice=='h'||choice=='v')){
+        cout << "INVALID INPUT, TRY AGAIN\n";
+        Flip();
+        return;
+    }
     char arr[SIZE][SIZE];
     if (choice == 'v') {
         for (int i = 0; i < SIZE; i++)
@@ -82,44 +87,46 @@ void Flip() {
         for (int i = 0; i < SIZE; i++)
             for (int j = 0; j < SIZE; j++)
                 image[i][j] = arr[i][SIZE - j];//similar to mirroring left side
-    } else if (choice == 'h')
+    } else
         for (int i = 0; i < SIZE; i++)
             for (int j = 0; j < SIZE / 2; j++)
                 swap(image[i][j], image[i][SIZE - j]);
-    else {
-        cout << "Make sure to enter a correct choice!\n";
-        Flip();
-    }
 }
 
 void Rotate() {
     cout << "Rotate (90), (180), (270) or (360) degrees?\n";
     int angle;
     cin >> angle;
+    set<int>Valid={90, 180, 270, 360};
+    if(!Valid.count(angle)){
+        cout << "INVALID DEGREE, TRY AGAIN\n";
+        Rotate();
+        return;
+    }
     int n_rotations = 4 - angle / 90;
     unsigned char image2[SIZE][SIZE];
     while (n_rotations--) { // rotating 90 degrees anti-clockwise multiple times bases on user's desire since 90*2=180 and 90*3=270
-        int k = 0;
+        int x = 0;
         for (int i = 0; i < SIZE; i++)
             for (int j = 0; j < SIZE; j++)
                 image2[i][j] = image[i][j];
         for (int j = SIZE - 1; j >= 0; j--) {
             for (int i = 0; i < SIZE; i++)
-                image[i][j] = image2[k][i];
-            k++;
+                image[i][j] = image2[x][i];
+            x++;
             // to rotate a 2d grid you make first row the last column , second row the penultimate column etc..
         }
     }
 }
 
-void Darken_or_lighten() {
+void Darken_or_Lighten() {
     char choice;
     cout << "Do you want to (d)arken or (l)ighten?\n";
     cin >> choice;
     choice = tolower(choice);
     if(!(choice == 'd'||choice == 'l')) {
-        cout << "Please enter a correct choice\n";
-        Darken_or_lighten();
+        cout << "INVALID INPUT, TRY AGAIN\n";
+        Darken_or_Lighten();
         return;
     }
     for (int i = 0; i < SIZE; i++)
@@ -136,7 +143,6 @@ void Mirror() {
     char choice;
     cout << "Mirror (l)eft, (r)ight, (u)pper, (d)own side? \n";
     cin >> choice;
-
     if (choice == 'r')
         for (int i = 0; i < SIZE; i++)
             for (int j = 0; j < SIZE; j++)
@@ -154,8 +160,9 @@ void Mirror() {
             for (int i = SIZE / 2; i < SIZE; i++)
                 image[i][j] = image[SIZE - i][j];
     else {
-        cout << "Make sure to input a correct letter\n";
+        cout << "INVALID INPUT, TRY AGAIN\n";
         Mirror();
+        return;
     }
 }
 
@@ -168,11 +175,11 @@ void Blur() {
 
             for (int di = -blurSize; di <= blurSize; di++)
                 for (int dj = -blurSize; dj <= blurSize; dj++) { // these loops just cut the image into 4x4 kernels
-                    int Kerneli = i + di;
-                    int Kernelj = j + dj;
+                    int Window_i = i + di;
+                    int Window_j = j + dj;
 
-                    if (Kerneli >= 0 && Kerneli < SIZE && Kernelj >= 0 && Kernelj < SIZE) {
-                        sum += image[Kerneli][Kernelj]; //calculates the sum of bits in the pixels and counts how many there are
+                    if (Window_i >= 0 && Window_i < SIZE && Window_j >= 0 && Window_j < SIZE) {
+                        sum += image[Window_i][Window_j]; //calculates the sum of bits in the pixels and counts how many there are
                         count++;
                     }
                 }
@@ -231,7 +238,7 @@ void Enlarge() {
     char quarter;
     cout << "Which Quarter do you want to enlarge 1, 2, 3 or 4 ?\n";
     cin >> quarter;
-    int startC, startR;
+    int startC = 0, startR = 0;
 
     // creating a white image
     unsigned char white_image[SIZE][SIZE];
@@ -253,7 +260,7 @@ void Enlarge() {
         startC = 128;
         startR = 128;
     } else {
-        cout << "INVALID QUARTER. TRY AGAIN.";
+        cout << "INVALID INPUT, TRY AGAIN.";
         Enlarge();
         return;
     }
@@ -277,9 +284,9 @@ void Enlarge() {
 }
 
 void Shrink() {
-    string lvl; // level of shrinking
+    string level; // level of shrinking
     cout << "Shrink to (1/2), (1/3) or (1/4)?\n";
-    cin >> lvl;
+    cin >> level;
 
     // creating a white image
     unsigned char white_image[SIZE][SIZE];
@@ -288,23 +295,23 @@ void Shrink() {
             white_image[i][j] = 255;
 
     // conditions to decide the new size of the image depending on the user input
-    int new_size;
-    if (lvl == "1/2")
-        new_size = SIZE / 2;
-    else if (lvl == "1/3")
-        new_size = SIZE / 3;
-    else if (lvl == "1/4")
-        new_size = SIZE / 4;
+    int New_Size=1;
+    if (level == "1/2")
+        New_Size = SIZE / 2;
+    else if (level == "1/3")
+        New_Size = SIZE / 3;
+    else if (level == "1/4")
+        New_Size = SIZE / 4;
     else {
-        cout << "please enter a correct shrinking level\n";
+        cout << "INVALID INPUT, TRY AGAIN\n";
         Shrink();
         return;
     }
 
     // creating an integer called blockS to decide what the block size we are going to use
-    int blockS = SIZE / new_size;
-    for (int i = 0; i < new_size; i++)
-        for (int j = 0; j < new_size; j++) {
+    int blockS = SIZE / New_Size;
+    for (int i = 0; i < New_Size; i++)
+        for (int j = 0; j < New_Size; j++) {
             // Calculate the average of the block from the original image
             int sum = 0;
             for (int x = 0; x < blockS; x++)
@@ -323,7 +330,7 @@ void Shrink() {
 void Shuffle() {
     int order[4];
     bool one, two, three, four;
-    one = two = three = four = 0;
+    one = two = three = four = false;
     // I want to check if 1 and 2 and 3 and 4 occur in the input
     // else it's an invalid form of input
     cout << "New order of quarters ?";
@@ -365,36 +372,37 @@ void Skew_Up() {
     cout << "Please enter degree to skew right: ";
     cin >> rad;
     if(rad>=90||rad<0){
-        cout << "Please enter a degree in the range [0,90[\n";
+        cout << "INVALID INPUT\n";
+        cout << "Please enter a degree in the range [0,90[\n";        Skew_Up();
         Skew_Up();
         return;
     }
     rad = (rad*22)/(180*7);
     int length = tan(rad)*256/(tan(rad)+1);
-    unsigned char white_image[SIZE][SIZE];
+    unsigned char White_Image[SIZE][SIZE];
     for (int i = 0; i < SIZE; i++)
         for (int j = 0; j < SIZE; j++)
-            white_image[i][j] = 255; // making a white image
+            White_Image[i][j] = 255; // making a white image
 
     for (int j = 0; j < SIZE; j++)
         for (int i = 0; i < SIZE; i++)
-            white_image[i * length / SIZE][j] = image[i][j]; // Shrink procedure
+            White_Image[i * length / SIZE][j] = image[i][j]; // Shrink procedure
 
     for (int i = 0; i < SIZE; i++)
         for (int j = 0; j < SIZE; j++) {
-            image[i][j] = white_image[i][j];
-            white_image[i][j] = 255;
+            image[i][j] = White_Image[i][j];
+            White_Image[i][j] = 255;
         }
     double move = (SIZE - length) / (1.0*SIZE);
     // every row there is a movement like a staircase when zooming in. this move variable helps doing it.
     for(int j=0;j<SIZE;j++)
         for(int i=0; i < length; i++)
-            white_image[(int)((SIZE-length) - j * move + i)][j] = image[i][j];
+            White_Image[(int)((SIZE - length) - j * move + i)][j] = image[i][j];
     // shifting every pixel to the designated row at SIZE-length) - j * move + i)
 
     for (int i = 0; i < SIZE; i++)
         for (int j = 0; j < SIZE; j++)
-            image[i][j] = white_image[i][j];
+            image[i][j] = White_Image[i][j];
 }
 
 void Skew_Right() {
@@ -402,58 +410,60 @@ void Skew_Right() {
     cout << "Please enter degree to skew right: ";
     cin >> rad;
     if(rad>=90||rad<0){
-        cout << "Please enter a degree in the range [0,90[\n";
+        cout << "INVALID INPUT\n";
+        cout << "Please enter a degree in the range [0,90[\n";        Skew_Right();
         Skew_Right();
         return;
     }
     rad = (rad*22)/(180*7);
     int length = tan(rad)*256/(tan(rad)+1);
-    unsigned char white_image[SIZE][SIZE];
+    unsigned char White_Image[SIZE][SIZE];
     for (int i = 0; i < SIZE; i++)
         for (int j = 0; j < SIZE; j++)
-            white_image[i][j] = 255; // making a white image
+            White_Image[i][j] = 255; // making a white image
 
     for (int i = 0; i < SIZE; i++)
         for (int j = 0; j < SIZE; j++)
-            white_image[i][j * length / SIZE] = image[i][j]; // Shrink procedure
+            White_Image[i][j * length / SIZE] = image[i][j]; // Shrink procedure
 
     for (int i = 0; i < SIZE; i++)
         for (int j = 0; j < SIZE; j++) {
-            image[i][j] = white_image[i][j];
-            white_image[i][j] = 255;
+            image[i][j] = White_Image[i][j];
+            White_Image[i][j] = 255;
         }
     double move = (SIZE - length) / (1.0*SIZE);
     // every row there is a movement like a staircase when zooming in. this move variable helps doing it.
     for(int i=0;i<SIZE;i++)
         for(int j=0; j < length; j++)
-            white_image[i][(int)((SIZE-length) - i * move + j)] = image[i][j];
+            White_Image[i][(int)((SIZE - length) - i * move + j)] = image[i][j];
     // shifting every pixel to the designated column at (SIZE-length) - i * move + j
 
     for (int i = 0; i < SIZE; i++)
         for (int j = 0; j < SIZE; j++)
-            image[i][j] = white_image[i][j];
+            image[i][j] = White_Image[i][j];
 }
 
 int cnt, flag = 1;
 unordered_map<char, function<void()>> Command_List;
-
 // creating a map that hold all the commands to avoid making a lot of if conditions
-void command_loop() {
-    char command; //getting the command from the user
+
+void Command_Loop() {
+    char Command; //getting the Command from the user
     cout << "Please select a filter to apply: \n";
     cout << "1- Black & White Filter \n2- Invert Filter \n3- Merge Filter \n";
     cout << "4- Flip Image \n5- Darken and Lighten Image \n6- Rotate Image \n";
     cout << "7- Detect Image Edges \n8- Enlarge Image \n9- Shrink Image \n";
     cout << "a- Mirror Image \nb- Shuffle Image \nc- Blur Image \nd- Crop Image \n";
     cout << "e- Skew Image Right \nf- Skew Image UP \ns- Save the Image\nr- Restart the Program\n0- Exit\n";
-    cin >> command;
-    command = tolower(command);
-    if (command == '0') {
+
+    cin >> Command;
+    Command = tolower(Command);
+    if (Command == '0') {
         cout << "Have a good day and goodbye\n";
         flag = false;
         return;
     }
-    if (Command_List.find(command) == Command_List.end()) {
+    if (Command_List.find(Command) == Command_List.end()) {
         cnt++;
         if (cnt == 20) {
             cout << "Too many unsuccessful attempts.\nHalting the program";
@@ -461,36 +471,37 @@ void command_loop() {
             return;
         }
         cout << "INVALID OPTION, Please choose from the numbers/letters on the screen\n";
-        command_loop();
+        Command_Loop();
+        return;
     }
-    Command_List[command]();
+    Command_List[Command]();
 }
 
 void Defining_Map() {
     // associating a void function with a number in a command map
-    Command_List['1'] = Black_And_White; // done
-    Command_List['2'] = Invert; // done
-    Command_List['3'] = Merge; // done
-    Command_List['4'] = Flip; // done
-    Command_List['5'] = Darken_or_lighten; // done
-    Command_List['6'] = Rotate; // done
-    Command_List['7'] = Detect_Edges; // done
-    Command_List['8'] = Enlarge; // done
-    Command_List['9'] = Shrink; // done
-    Command_List['a'] = Mirror; // done
-    Command_List['b'] = Shuffle; // done
-    Command_List['c'] = Blur; // done
-    Command_List['d'] = Crop; // done
-    Command_List['e'] = Skew_Right; // done
-    Command_List['f'] = Skew_Up; // done
-    Command_List['s'] = save_Image; // done
+    Command_List['1'] = Black_And_White;
+    Command_List['2'] = Invert;
+    Command_List['3'] = Merge;
+    Command_List['4'] = Flip;
+    Command_List['5'] = Darken_or_Lighten;
+    Command_List['6'] = Rotate;
+    Command_List['7'] = Detect_Edges;
+    Command_List['8'] = Enlarge;
+    Command_List['9'] = Shrink;
+    Command_List['a'] = Mirror;
+    Command_List['b'] = Shuffle;
+    Command_List['c'] = Blur;
+    Command_List['d'] = Crop;
+    Command_List['e'] = Skew_Right;
+    Command_List['f'] = Skew_Up;
+    Command_List['s'] = Save_Image;
     Command_List['r'] = main;
 }
 
 int main() {
     Defining_Map();
-    load_Image();
+    Load_Image();
     cout << "Welcome To Our Image Processing Project\n";
     while (flag)
-        command_loop();
+        Command_Loop();
 }
