@@ -31,7 +31,7 @@ void Load_Image() {
     readRGBBMP(imageFileName, image);
 }
 
-void save_Image() {
+void Save_Image() {
     char imageFileName[100];
 
     // Get gray scale image target file name
@@ -550,7 +550,7 @@ void Defining_Map() {
     Command_List['d'] = Crop;
     Command_List['e'] = Skew_Right;
     Command_List['f'] = Skew_Up;
-    Command_List['s'] = save_Image;
+    Command_List['s'] = Save_Image;
     Command_List['r'] = main;
 }
 
