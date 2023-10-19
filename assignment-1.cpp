@@ -446,7 +446,6 @@ void command_loop() {
     cout << "7- Detect Image Edges \n8- Enlarge Image \n9- Shrink Image \n";
     cout << "a- Mirror Image \nb- Shuffle Image \nc- Blur Image \nd- Crop Image \n";
     cout << "e- Skew Image Right \nf- Skew Image UP \ns- Save the Image\nr- Restart the Program\n0- Exit\n";
-    // cout << "h- Print the Image to a File \n0- Exit\n";
     cin >> command;
     command = tolower(command);
     if (command == '0') {
