@@ -6,7 +6,7 @@
     TA: n/a
     Purpose: Demonstrate use of bmplip for handling
     bmp colored and grayscale images
-    Program load a gray image and store in another file
+    Program load an RGB and store it in another file
     program also applies filters to images depending on the user's request */
 
 #include <bits/stdc++.h>
