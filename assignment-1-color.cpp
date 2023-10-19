@@ -147,14 +147,14 @@ void Rotate() {
     }
 }
 
-void Darken_or_lighten() {
+void Darken_or_Lighten() {
     char choice;
     cout << "Do you want to (d)arken or (l)ighten?\n";
     cin >> choice;
     choice = tolower(choice);
     if(!(choice == 'd'||choice == 'l')) {
         cout << "INVALID INPUT, TRY AGAIN\n";
-        Darken_or_lighten();
+        Darken_or_Lighten();
         return;
     }
     for (int i = 0; i < SIZE; i++)
@@ -539,7 +539,7 @@ void Defining_Map() {
     Command_List['2'] = Invert;
     Command_List['3'] = Merge;
     Command_List['4'] = Flip;
-    Command_List['5'] = Darken_or_lighten; 
+    Command_List['5'] = Darken_or_Lighten; 
     Command_List['6'] = Rotate; 
     Command_List['7'] = Edge_Detection; 
     Command_List['8'] = Enlarge;
