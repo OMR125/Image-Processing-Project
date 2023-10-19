@@ -397,7 +397,47 @@ void Shuffle() {
     }
 }
 
-void Skew_Up() {}
+void Skew_Up() {
+    double rad;
+    cout << "Please enter degree to skew right: ";
+    cin >> rad;
+    if(rad>=90||rad<0){
+        cout << "Please enter a degree in the range [0,90[\n";
+        Skew_Up();
+        return;
+    }
+    rad = (rad*22)/(180*7);
+    int length = tan(rad)*256/(tan(rad)+1);
+    unsigned char white_image[SIZE][SIZE][RGB];
+    for (int i = 0; i < SIZE; i++)
+        for (int j = 0; j < SIZE; j++)
+            for(int k = 0; k < RGB; k++)
+                white_image[i][j][k] = 255; // making a white image
+
+    for (int j = 0; j < SIZE; j++)
+        for (int i = 0; i < SIZE; i++)
+            for(int k = 0; k < RGB; k++)
+                white_image[i * length / SIZE][j][k] = image[i][j][k]; // Shrink procedure
+
+    for (int i = 0; i < SIZE; i++)
+        for (int j = 0; j < SIZE; j++)
+            for(int k = 0; k < RGB; k++) {
+                image[i][j][k] = white_image[i][j][k];
+                white_image[i][j][k] = 255;
+            }
+    double move = (SIZE - length) / (1.0*SIZE);
+    // every row there is a movement like a staircase when zooming in. this move variable helps doing it.
+    for(int j=0;j<SIZE;j++)
+        for(int i=0; i < length; i++)
+            for(int k = 0; k < RGB; k++)
+                white_image[(int)((SIZE-length) - j * move + i)][j][k] = image[i][j][k];
+    // shifting every pixel to the designated row at (SIZE-length) - j * move + i
+
+    for (int i = 0; i < SIZE; i++)
+        for (int j = 0; j < SIZE; j++)
+            for(int k = 0; k < RGB; k++)
+                image[i][j][k] = white_image[i][j][k];
+}
 
 void Skew_Right() {
     double rad;
@@ -414,12 +454,12 @@ void Skew_Right() {
     for (int i = 0; i < SIZE; i++)
         for (int j = 0; j < SIZE; j++)
             for(int k = 0; k < RGB; k++)
-            white_image[i][j][k] = 255; // making a white image
+                white_image[i][j][k] = 255; // making a white image
 
     for (int i = 0; i < SIZE; i++)
         for (int j = 0; j < SIZE; j++)
             for(int k = 0; k < RGB; k++)
-            white_image[i][j * length / SIZE][k] = image[i][j][k]; // Shrink procedure
+                white_image[i][j * length / SIZE][k] = image[i][j][k]; // Shrink procedure
 
     for (int i = 0; i < SIZE; i++)
         for (int j = 0; j < SIZE; j++)
@@ -477,9 +517,9 @@ void command_loop() {
 
 void Defining_Map() {
     //associating a void function with a number in a command map
-    Command_List['1'] = Black_And_White; // needs work
+    Command_List['1'] = Black_And_White; // done
     Command_List['2'] = Invert; // done in rgb
-    Command_List['3'] = Merge; // not working properly needs fixing
+    Command_List['3'] = Merge; // done in rgb
     Command_List['4'] = Flip; // done in rgb
     Command_List['5'] = Darken_or_lighten; // done in rgb
     Command_List['6'] = Rotate; // done in rgb
@@ -490,8 +530,8 @@ void Defining_Map() {
     Command_List['b'] = Shuffle; // done in rgb
     Command_List['c'] = Blur; // done in rgb
     Command_List['d'] = Crop; // done in rgb
-    Command_List['e'] = Skew_Right; // [N/A]
-    Command_List['f'] = Skew_Up; // [N/A]
+    Command_List['e'] = Skew_Right; // done in rgb
+    Command_List['f'] = Skew_Up; // done in rgb
     Command_List['s'] = save_Image; // done in rgb
     Command_List['r'] = main;
 }
