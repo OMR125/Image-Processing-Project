@@ -24,13 +24,13 @@ Detect Image Edges: This filter works by checking the pixel's neighbours and tak
 
 Enlarge: This filter works by taking each pixel in the quarter the user selected and making that pixel value equal to 4 pixel values in the 256x256 image thus enlarging (upscaling) the selected quarter.
 
-Shrink:
+Shrink: After taking the desired level of shrinking from the user we decide on the new_size of the image and after doing that we create small blocks of pixels and these blocks help us by looping through them and taking the average of their values we get the shrinking (downscaling) effect.  
 
 Mirror: This filter works by making the half that the user requested and duplicates it on the other side by a simple operation 
 
 Shuffle: This filter works by making the original image into quarters and then depending on the user's request the quarters are sorted and swapped with the original image
 
-Blur:
+Blur: Simmilar to shrinking we also try to make small blocks or windows of size : blursize which contributes to the blur effect ( the higher the blur size the bigger the windows created which correlates to the blurring effect generated after that we just loop through said windows and average the pixels to get our desired blur effect 
 
 Crop: This filter just works by starting on the x,y positions that the user inputs and then travels l,w distance and saves them on a white background.  
 
